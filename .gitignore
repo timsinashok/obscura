@@ -1,0 +1,5 @@
+node_modules/
+.env
+src/private-key.pem
+src/public-key.pem
+src/config/authorized-origins.json
