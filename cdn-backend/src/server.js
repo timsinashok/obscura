@@ -30,6 +30,9 @@ keyManager.loadAuthorizedOrigins().then(() => {
 const contentRoutes = require('./routes/contentRoutes');
 app.use('/content', contentRoutes);
 
+const fileRoutes = require('./routes/fileRoutes');
+app.use('/files', fileRoutes);
+
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
