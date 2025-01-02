@@ -30,7 +30,7 @@ const Sidebar = () => {
   return (
     <nav className="w-64 bg-white border-r">
       <div className="p-4">
-        <h1 className="text-xl font-bold">CDN Dashboard</h1>
+        <h1 className="text-xl font-bold">Obscura</h1>
       </div>
       <div className="space-y-1">
         {navItems.map((item) => (

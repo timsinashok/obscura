@@ -3,3 +3,4 @@ node_modules/
 src/private-key.pem
 src/public-key.pem
 src/config/authorized-origins.json
+.DS_Store
