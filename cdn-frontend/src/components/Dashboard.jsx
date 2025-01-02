@@ -5,7 +5,8 @@ import {
   Link, 
   Share2, 
   Shield, 
-  BarChart 
+  BarChart, 
+  User 
 } from 'lucide-react';
 
 // Dashboard Layout
@@ -24,6 +25,7 @@ const Sidebar = () => {
     { icon: Files, label: 'Files', path: '/files' },
     { icon: BarChart, label: 'Analytics', path: '/analytics' },
     { icon: Shield, label: 'Security', path: '/security' },
+    { icon: User, label: 'Profile', path: '/profile' },
     { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 

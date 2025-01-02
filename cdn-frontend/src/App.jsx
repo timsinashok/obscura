@@ -1,65 +1,12 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { DashboardLayout, FileManager, SecuritySettings, AnalyticsDashboard } from './components/Dashboard';
-import {Login } from './components/ProtectedRoute/Login';
-import { AuthProvider} from './components/ProtectedRoute/AuthProvider';
+import { Login } from './components/ProtectedRoute/Login';
+import { Register } from './components/ProtectedRoute/Register';
+import { ForgotPassword } from './components/ProtectedRoute/ForgotPassword';
+import { Profile } from './components/Profile/Profile';
+import { AuthProvider } from './components/ProtectedRoute/AuthProvider';
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
-
-
-// function App() {
-//   return (
-//     <AuthProvider>
-//       <Router>
-//         <Routes>
-//           <Route path="/login" element={<Login />} />
-//           <Route path="/*" element={
-//             <ProtectedRoute>
-//               <DashboardLayout>
-//                 <Routes>
-//                   <Route path="/files" element={<FileManager />} />
-//                   <Route path="/analytics" element={<AnalyticsDashboard />} />
-//                   <Route path="/security" element={<SecuritySettings />} />
-//                 </Routes>
-//               </DashboardLayout>
-//             </ProtectedRoute>
-//           } />
-//         </Routes>
-//       </Router>
-//     </AuthProvider>
-//   );
-// }
-
-// export default App;
-
-
-
-
-// function App() {
-//   return (
-//     <AuthProvider>
-//       <Router>
-//         <Routes>
-//           <Route path="/login" element={<Login />} />
-//           <Route path="/*" element={
-//             <ProtectedRoute>
-//               <DashboardLayout>
-//                 <Routes>
-//                   <Route path="/files" element={<FileManager />} />
-//                   <Route path="/analytics" element={<AnalyticsDashboard />} />
-//                   <Route path="/security" element={<SecuritySettings />} />
-//                 </Routes>
-//               </DashboardLayout>
-//             </ProtectedRoute>
-//           } />
-//         </Routes>
-//       </Router>
-//     </AuthProvider>
-//   );
-// }
-
-// export default App;
-
-
 
 function App() {
   return (
@@ -67,6 +14,8 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/*" element={
             <ProtectedRoute>
               <DashboardLayout>
@@ -74,6 +23,8 @@ function App() {
                   <Route path="/files" element={<FileManager />} />
                   <Route path="/analytics" element={<AnalyticsDashboard />} />
                   <Route path="/security" element={<SecuritySettings />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/" element={<Navigate to="/files" replace />} />
                 </Routes>
               </DashboardLayout>
             </ProtectedRoute>
