@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { DashboardLayout, FileManager, SecuritySettings, AnalyticsDashboard } from './components/Dashboard';
+import { Overview,DashboardLayout, FileManager, SecuritySettings, AnalyticsDashboard } from './components/Dashboard';
 import { Login } from './components/ProtectedRoute/Login';
 import { Register } from './components/ProtectedRoute/Register';
 import { ForgotPassword } from './components/ProtectedRoute/ForgotPassword';
@@ -20,11 +20,12 @@ function App() {
             <ProtectedRoute>
               <DashboardLayout>
                 <Routes>
+                  <Route path="/overview" element={<Overview />} />
                   <Route path="/files" element={<FileManager />} />
                   <Route path="/analytics" element={<AnalyticsDashboard />} />
                   <Route path="/security" element={<SecuritySettings />} />
                   <Route path="/profile" element={<Profile />} />
-                  <Route path="/" element={<Navigate to="/files" replace />} />
+                  <Route path="/" element={<Navigate to="/overview" replace />} />
                 </Routes>
               </DashboardLayout>
             </ProtectedRoute>
