@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { 
   Files, 
   Settings, 
-  Link, 
+  Link as LinkIcon,
   Share2, 
   Shield, 
   BarChart, 
   User,
   Home
 } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 // Dashboard Layout
 const DashboardLayout = ({ children }) => (
@@ -22,6 +23,7 @@ const DashboardLayout = ({ children }) => (
 
 // Sidebar Navigation
 const Sidebar = () => {
+  const location = useLocation();
   const navItems = [
     { icon: Home, label: 'Overview', path: '/overview' },
     { icon: Files, label: 'Files', path: '/files' },
@@ -29,29 +31,30 @@ const Sidebar = () => {
     { icon: Shield, label: 'Security', path: '/security' },
     { icon: User, label: 'Profile', path: '/profile' },
     { icon: Settings, label: 'Settings', path: '/settings' },
-    
   ];
 
   return (
     <nav className="w-64 bg-white border-r">
-    <div className="flex items-center justify-center">
-      <img
-        src="../../assets/images/logo.png"
-        alt="Company Logo"
-        className="mx-auto w-auto object-contain"
-        style={{ maxWidth: '100%', height: '5rem' }} // Adjust '2rem' to your desired size
-      />
-    </div>
+      <div className="flex items-center justify-center">
+        <img
+          src="../../assets/images/logo.png"
+          alt="Company Logo"
+          className="mx-auto w-auto object-contain"
+          style={{ maxWidth: '100%', height: '5rem' }}
+        />
+      </div>
       <div className="space-y-1">
         {navItems.map((item) => (
-          <a
+          <Link
             key={item.path}
-            href={item.path}
-            className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+            to={item.path}
+            className={`flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 ${
+              location.pathname === item.path ? 'bg-gray-100 text-indigo-600' : ''
+            }`}
           >
             <item.icon className="w-5 h-5 mr-3" />
             {item.label}
-          </a>
+          </Link>
         ))}
       </div>
     </nav>
@@ -88,7 +91,7 @@ const FileManager = () => {
             <span>{file.uploadDate}</span>
             <div className="flex space-x-2">
               <button className="p-1 hover:bg-gray-100 rounded">
-                <Link className="w-4 h-4" />
+                <LinkIcon className="w-4 h-4" />
               </button>
               <button className="p-1 hover:bg-gray-100 rounded">
                 <Share2 className="w-4 h-4" />

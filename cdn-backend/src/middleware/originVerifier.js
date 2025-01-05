@@ -19,7 +19,6 @@ async function verifyOriginMiddleware(req, res, next) {
     // Data to verify
     const dataToVerify = `${origin}:${timestamp}:/content${req.path}`;
     console.log('Data to verify:', dataToVerify);
-    
     const isValid = keyManager.verifyOrigin(origin, signature, dataToVerify);
     if (!isValid) {
         return res.status(403).json({ error: 'Invalid origin signature' });
