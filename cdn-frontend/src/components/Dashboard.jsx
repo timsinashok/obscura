@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Files, 
   Settings, 
@@ -10,6 +10,8 @@ import {
   Home
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { fileService, websiteService } from '../services/api';
+import { toast } from 'react-hot-toast';
 
 // Dashboard Layout
 const DashboardLayout = ({ children }) => (
@@ -64,41 +66,201 @@ const Sidebar = () => {
 // File Manager Component
 const FileManager = () => {
   const [files, setFiles] = useState([]);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [selectedWebsite, setSelectedWebsite] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [websites, setWebsites] = useState([]);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const fileInputRef = React.useRef(null);
+
+  useEffect(() => {
+    fetchWebsites();
+    fetchFiles();
+  }, []);
+
+  const fetchWebsites = async () => {
+    try {
+      const data = await websiteService.getWebsites();
+      setWebsites(data);
+    } catch (error) {
+      console.error('Failed to fetch websites:', error);
+      toast.error('Failed to load websites');
+    }
+  };
+
+  const fetchFiles = async () => {
+    try {
+      setIsLoading(true);
+      const data = await fileService.listFiles();
+      setFiles(data);
+    } catch (error) {
+      console.error('Failed to fetch files:', error);
+      toast.error('Failed to load files');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    
+    if (!selectedFile || !selectedWebsite) {
+      toast.error('Please select both a file and a website');
+      return;
+    }
+
+    try {
+      const uploadedFile = await fileService.uploadFile(selectedFile, selectedWebsite);
+      setFiles(prev => [...prev, uploadedFile]);
+      toast.success('File uploaded successfully');
+      
+      // Reset form
+      setSelectedFile(null);
+      setSelectedWebsite('');
+      setUploadProgress(0);
+      setIsUploadModalOpen(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error) {
+      console.error('Upload failed:', error);
+      toast.error('Failed to upload file');
+    }
+  };
+
+  const handleDeleteFile = async (id) => {
+    try {
+      await fileService.deleteFile(id);
+      setFiles(files.filter(file => file.id !== id));
+      toast.success('File deleted successfully');
+    } catch (error) {
+      console.error('Delete failed:', error);
+      toast.error('Failed to delete file');
+    }
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Files</h2>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded">
+        <button 
+          onClick={() => setIsUploadModalOpen(true)}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+        >
           Upload New
         </button>
       </div>
       
+      {/* Upload Modal */}
+      {isUploadModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-4">Upload New File</h3>
+            
+            <form onSubmit={handleUpload} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Select Website
+                </label>
+                <select
+                  value={selectedWebsite}
+                  onChange={(e) => setSelectedWebsite(e.target.value)}
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="">Choose a website</option>
+                  {websites.map((website) => (
+                    <option key={website.id} value={website.id}>
+                      {website.domain}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Select File
+                </label>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileSelect}
+                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              {uploadProgress > 0 && (
+                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                  <div
+                    className="bg-blue-600 h-2.5 rounded-full"
+                    style={{ width: `${uploadProgress}%` }}
+                  ></div>
+                </div>
+              )}
+
+              <div className="flex justify-end space-x-2 mt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsUploadModalOpen(false)}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Upload
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Files List */}
       <div className="bg-white rounded-lg shadow">
-        <div className="grid grid-cols-5 gap-4 p-4 font-medium border-b">
+        <div className="grid grid-cols-6 gap-4 p-4 font-medium border-b">
           <span>Name</span>
           <span>Size</span>
           <span>Type</span>
+          <span>Website</span>
           <span>Uploaded</span>
           <span>Actions</span>
         </div>
         
         {files.map((file) => (
-          <div key={file.id} className="grid grid-cols-5 gap-4 p-4 border-b">
+          <div key={file.id} className="grid grid-cols-6 gap-4 p-4 border-b">
             <span>{file.name}</span>
             <span>{file.size}</span>
             <span>{file.type}</span>
+            <span>{file.website}</span>
             <span>{file.uploadDate}</span>
             <div className="flex space-x-2">
-              <button className="p-1 hover:bg-gray-100 rounded">
+              <button className="p-1 hover:bg-gray-100 rounded" title="Copy Link">
                 <LinkIcon className="w-4 h-4" />
               </button>
-              <button className="p-1 hover:bg-gray-100 rounded">
+              <button className="p-1 hover:bg-gray-100 rounded" title="Share">
                 <Share2 className="w-4 h-4" />
               </button>
             </div>
           </div>
         ))}
+
+        {files.length === 0 && (
+          <div className="p-4 text-center text-gray-500">
+            No files uploaded yet
+          </div>
+        )}
       </div>
     </div>
   );

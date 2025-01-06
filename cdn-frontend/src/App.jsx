@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import { Overview,DashboardLayout, FileManager, SecuritySettings, AnalyticsDashboard } from './components/Dashboard';
 import { Login } from './components/ProtectedRoute/Login';
 import { Register } from './components/ProtectedRoute/Register';
@@ -12,6 +13,7 @@ function App() {
   return (
     <Router>
       <AuthProvider>
+        <Toaster position="top-right" />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
