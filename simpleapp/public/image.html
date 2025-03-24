@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poem Display</title>
+    <style>
+        body { background-color: #f4f4f4; display: flex; height: 100vh; justify-content: center; align-items: center; }
+        #poem-container { background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); text-align: center; }
+        canvas { border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <div id="poem-container">
+        <h1>Poetic Reflections</h1>
+        <canvas id="poem-canvas"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('poem-canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.src = '/api/poem-image';
+
+        img.onload = function() {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+        };
+
+        // Prevent right-click context menu
+        canvas.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poem Display</title>
+    <style>
+        body { background-color: #f4f4f4; display: flex; height: 100vh; justify-content: center; align-items: center; }
+        #poem-container { background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); text-align: center; }
+        canvas { border: 2px solid #000; }
+    </style>
+</head>
+<body>
+    <div id="poem-container">
+        <h1>Poetic Reflections</h1>
+        <canvas id="poem-canvas" width="400" height="300"></canvas>
+    </div>
+
+    <script>
+        async function fetchPoem() {
+            try {
+                const response = await fetch('/api/poem');
+                const data = await response.json();
+
+                const canvas = document.getElementById('poem-canvas');
+                const ctx = canvas.getContext('2d');
+
+                ctx.font = '16px Arial';
+                ctx.fillStyle = 'black';
+                ctx.textAlign = 'center';
+
+                const lines = data.poem.trim().split('\n');
+                lines.forEach((line, index) => {
+                    ctx.fillText(line, canvas.width / 2, 40 + index * 30);
+                });
+            } catch (error) {
+                console.error('Error fetching or displaying the poem:', error);
+            }
+        }
+
+        fetchPoem();
+    </script>
+</body>
+</html>
+
+

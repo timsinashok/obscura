@@ -1,8 +1,0 @@
-{
-  "authorizedOrigins": [
-    {
-      "domain": "example.com",
-      "publicKey": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtQSfmhY+zhPAPVqKfSkG\nDN4hZnKTp73gF4NP+LTsPLabdslWhUWt0uZYkf+g7l5D2kAT1LsI+MiD6uQsvTD9\nJ84gdNSoOvx9FhL5OaUOHL0X11Go2gZTdDU6YAYHKP7KNfGv2jsFrT+7J6LuZuCq\n+jI7OzoJxP40KdkDpTep3BHweC+/hQRWwnzJzXV9PeimZ4MFHDTAXW2NMwclT/Yv\nY5Vg9fumLBzYGy6o708awmClDNcoucsEYWuCBapRQ+4yw5wrRoKbPHn3J/LE5KNC\nTT+yhTLDY5BXabd6i6eqcxkQJkH8DvQnh6tABOQN+g7GM/lpSi6S78Xdzlb10XOQ\n3wIDAQAB\n-----END PUBLIC KEY-----\n"
-    }
-  ]
-}
