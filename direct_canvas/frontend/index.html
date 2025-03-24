@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Text Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            user-select: none; /* Prevent text selection */
+        }
+        #secureFrame {
+            width: 80%;
+            height: 300px;
+            border: 2px solid black;
+            display: none;
+            margin-top: 20px;
+            pointer-events: none; /* Disable interaction */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Obscura Trial -- passing the whole canvas from backend</h1>
+    <p id="linkContainer"></p>
+
+    <iframe id="secureFrame" sandbox="allow-scripts"></iframe>
+
+    <script>
+        window.onload = function() {
+            getSecureLink();
+        };
+
+        async function getSecureLink() {
+            try {
+                const response = await fetch('http://localhost:3001/api/get-secure-link');
+                const data = await response.json();
+
+                if (data.link) {
+                    loadSecureContent(data.link);
+                } else {
+                    alert("Failed to get secure link.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+
+        function loadSecureContent(link) {
+            const frame = document.getElementById("secureFrame");
+            frame.style.display = "block";
+            frame.src = link;
+        }
+
+        
+    </script>
+
+</body>
+</html>
