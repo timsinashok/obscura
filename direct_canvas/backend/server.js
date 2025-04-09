@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const app = express();
 app.use(cors());
 
-const SECRET_KEY = crypto.createHash('sha256').update("my-fixed-secret-key").digest(); // 256-bit key
+const SECRET_KEY = crypto.createHash('sha256').update("").digest(); // 256-bit key
 const validLinks = new Map(); // Store valid links
 
 // Function to encrypt data
