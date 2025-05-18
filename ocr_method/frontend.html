@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server-Rendered Image Viewer</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 20px; }
+        #contentImage { border: 1px solid black; margin-top: 20px; max-width: 100%; height: auto;}
+        #statusMessage { margin-top: 20px; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>Secure Content (Server-Rendered Image)</h1>
+    <button id="loadContentBtn">Load Content Image</button>
+    <p id="statusMessage">Click the button to load content.</p>
+    <img id="contentImage" src="" alt="Secure Content Area"/>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000'; // Adjust if your backend runs elsewhere
+        const contentImageEl = document.getElementById('contentImage');
+        const statusMessage = document.getElementById('statusMessage');
+        const loadContentBtn = document.getElementById('loadContentBtn');
+
+        async function fetchAndDisplayImage() {
+            statusMessage.textContent = "Loading...";
+            loadContentBtn.disabled = true;
+            contentImageEl.style.display = 'none'; // Hide image while loading new one
+            contentImageEl.src = ""; // Clear previous image
+
+            try {
+                // 1. Fetch the view token
+                statusMessage.textContent = "Requesting view token...";
+                const tokenResponse = await fetch(`${API_BASE_URL}/api/get-secure-content-view-token`);
+                if (!tokenResponse.ok) {
+                    let errorDetail = `Failed to fetch view token: ${tokenResponse.statusText}`;
+                    try { const errData = await tokenResponse.json(); if(errData.detail) errorDetail += ` - ${errData.detail}`; } catch(e){}
+                    throw new Error(errorDetail);
+                }
+                const tokenData = await tokenResponse.json();
+                const viewToken = tokenData.viewToken;
+
+                if (!viewToken) {
+                    throw new Error("View token not received.");
+                }
+                console.log("Received View Token:", viewToken);
+
+                // 2. Set the image source to the endpoint that serves the image
+                statusMessage.textContent = "Loading content image...";
+                const imageUrl = `${API_BASE_URL}/viewer/content-image/${viewToken}`;
+                console.log("Setting image src to:", imageUrl);
+                
+                contentImageEl.onload = () => {
+                    statusMessage.textContent = "Content image loaded!";
+                    contentImageEl.style.display = 'block';
+                };
+                contentImageEl.onerror = () => {
+                    console.error("Error loading image from URL:", imageUrl);
+                    statusMessage.textContent = "Error: Could not load content image.";
+                    alert("Error loading content image. The link might have expired or been used already.");
+                };
+                contentImageEl.src = imageUrl;
+
+            } catch (error) {
+                console.error("Error during operation:", error);
+                statusMessage.textContent = `Error: ${error.message}`;
+            } finally {
+                loadContentBtn.disabled = false;
+            }
+        }
+
+        loadContentBtn.addEventListener('click', fetchAndDisplayImage);
+    </script>
+</body>
+</html>
